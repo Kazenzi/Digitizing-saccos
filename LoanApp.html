@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ni Mimi </title>
+    <link rel="stylesheet" href="LoanApp.css">
+</head>
+<body>
+    <form id="loanForm" action="your-server-url.com" method="POST">
+        <fieldset>
+          <legend>Loan Request</legend>
+          <div class="form-control">
+            <label for="borrowerName">Name</label>
+            <input type="text" id="borrowerName" name="borrowerName" required />
+          </div>
+          <div class="form-control">
+            <label for="guarantorsName">Guarantor's Name</label>
+            <input type="text" id="guarantorsName" name="guarantorsName" required />
+          </div>
+          <div class="form-control">
+            <label for="phoneNumber">Phone Number</label>
+            <input type="tel" id="phoneNumber" name="phoneNumber"  required />
+          </div>
+          <div class="form-control">
+            <label for="loanAmount">Amount of Loan</label>
+            <input type="number" id="loanAmount" name="loanAmount" min="100" max="1000000" required />
+          </div>
+          <div class="form-control">
+            <label for="reasonForLoan">Reason for Loan</label>
+            <textarea id="reasonForLoan" name="reasonForLoan" cols="30" rows="10" required></textarea>
+          </div>
+          <div class="form-control">
+            <button type="button" id="submitRequest">Submit Request</button>
+          </div>
+        </fieldset>
+    </form>
+    <script src="https://cdn.africastalking.com/sdks/javascript/latest/africastalking.js"></script>
+
+    <script>
+        // Set your app credentials
+        const credentials = {
+           
+            
+        }
+    
+        // Initialize the SDK and send SMS
+        AfricasTalking.initialize(credentials).then(() => {
+            // Get the SMS service
+            const sms = AfricasTalking.SMS;
+        
+            // Function to send SMS
+            function sendSMS(guarantorPhoneNumber, guarantorsName, borrowerName) {
+                // Message to be sent
+                const message = "Hello " + guarantorsName + ",\n\n" + borrowerName + " has requested you to approve her loan request.\n\nIf you agree, please do so using the following link: " + window.location.href;
+        
+                // Options for sending SMS
+                const options = {
+                    // Set the numbers you want to send to in international format
+                    to: [guarantorPhoneNumber], // Assuming guarantorPhoneNumber is in international format
+                    // Set your message
+                    message: message,
+                    // Set your shortCode or senderId
+                    from: 'YOUR_SENDER_ID' // Replace 'YOUR_SENDER_ID' with your actual senderId provided by AfricasTalking
+                }
+        
+                // Send the SMS
+                sms.send(options)
+                    .then(response => {
+                        // Handle successful sending
+                        alert("SMS Sent!");
+                        console.log("SMS sent successfully:", response);
+                    })
+                    .catch(error => {
+                        // Handle errors
+                        alert("Failed to send SMS. Please try again later.");
+                        console.error("Error sending SMS:", error);
+                    });
+            }
+        
+            // Form submission handler
+            function onSubmit() {
+                const guarantorPhoneNumber = document.querySelector('#phoneNumber').value;
+                const guarantorsName = document.querySelector('#guarantorsName').value;
+                const borrowerName = document.querySelector('#borrowerName').value;
+        
+                // Send SMS
+                sendSMS(guarantorPhoneNumber, guarantorsName, borrowerName);
+        
+                // Submit the form
+                document.getElementById('loanForm').submit();
+            }
+        
+            // Attach click event listener to the submit button
+            document.getElementById('submitRequest').addEventListener('click', onSubmit);
+        });
+    </script>
+</body>
+</html>
